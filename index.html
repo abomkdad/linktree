@@ -3,103 +3,91 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>MAD | كاتيجوريات سريعة</title>
+  <title>MAD | روابط سريعة بالصور</title>
   <style>
-    :root{--bg:#f7f7f7;--card:#fff;--text:#0f0f0f;--muted:#666;--ring:#e3e3e3;--radius:22px;--sticky-h:78px}
+    :root{--gap:14px;--radius:22px;--ring:#e5e5e5;--sticky-h:78px}
     *{box-sizing:border-box} html,body{height:100%}
-    body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Kufi Arabic","Noto Sans Arabic",Tahoma,Arial,sans-serif;line-height:1.5;padding-bottom:calc(var(--sticky-h) + env(safe-area-inset-bottom,0px))}
-    .wrap{max-width:720px;margin:0 auto;padding:18px 16px 24px}
-    header{text-align:center;padding:8px 0 16px}
-    h1{margin:0 0 6px;font-size:clamp(22px,5vw,30px);font-weight:800}
-    p.sub{margin:0;color:var(--muted);font-size:14px}
-    .list{display:flex;flex-direction:column;gap:14px;margin-top:14px}
-    a.card{display:flex;align-items:center;gap:14px;text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--ring);border-radius:var(--radius);padding:12px;box-shadow:0 4px 14px rgba(0,0,0,.04);transition:transform .12s,box-shadow .12s,border-color .12s;-webkit-tap-highlight-color:transparent}
-    a.card:hover{box-shadow:0 10px 24px rgba(0,0,0,.08);border-color:#d2d2d2}
-    a.card:active{transform:scale(.99) translateY(1px)}
-    .thumb{width:96px;height:72px;border-radius:16px;overflow:hidden;flex:0 0 96px;background:#fafafa;border:1px solid #eee}
-    .thumb img{width:100%;height:100%;object-fit:cover;object-position:center;display:block}
-    .txt{flex:1 1 auto;min-width:0}.txt h3{margin:0;font-size:18px;font-weight:800}.txt span{display:block;font-size:13px;color:var(--muted);margin-top:2px}
-    .arrow{font-size:18px;opacity:.5}
-    .sticky{position:fixed;inset-inline:0;bottom:0;height:var(--sticky-h);padding:8px 12px calc(8px + env(safe-area-inset-bottom,0px));background:linear-gradient(180deg,rgba(255,255,255,0),rgba(255,255,255,.92) 10%,#fff 40%);display:flex;justify-content:center;align-items:flex-end;pointer-events:none;z-index:50}
-    .sticky .box{pointer-events:auto;max-width:720px;width:calc(100% - 24px);display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--ring);border-radius:16px;padding:10px 12px;text-decoration:none;color:#000;box-shadow:0 6px 24px rgba(0,0,0,.08)}
+    body{margin:0;background:#f7f7f7;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Kufi Arabic","Noto Sans Arabic",Tahoma,Arial,sans-serif;
+         padding-bottom:calc(var(--sticky-h) + env(safe-area-inset-bottom,0px))}
+    .wrap{max-width:720px;margin:0 auto;padding:16px}
+    .gallery{display:flex;flex-direction:column;gap:var(--gap)}
+    a.tile{display:block;border:1px solid var(--ring);border-radius:var(--radius);overflow:hidden;background:#fff;
+           box-shadow:0 4px 14px rgba(0,0,0,.05);transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease}
+    a.tile:hover{box-shadow:0 10px 26px rgba(0,0,0,.09);border-color:#d4d4d4}
+    a.tile:active{transform:scale(.99) translateY(1px)}
+    .tile img{display:block;width:100%;height:auto}
+
+    /* بوكس العروض والحملات (ثابت بأسفل الشاشة) */
+    .sticky{position:fixed;inset-inline:0;bottom:0;height:var(--sticky-h);
+            padding:8px 12px calc(8px + env(safe-area-inset-bottom,0px));
+            background:linear-gradient(180deg,rgba(255,255,255,0),rgba(255,255,255,.92) 10%, #fff 40%);
+            display:flex;justify-content:center;align-items:flex-end;pointer-events:none;z-index:50}
+    .sticky .box{pointer-events:auto;max-width:720px;width:calc(100% - 24px);
+                 display:flex;align-items:center;gap:10px;background:#fff;border:1px solid #e5e5e5;border-radius:16px;
+                 padding:10px 12px;box-shadow:0 6px 24px rgba(0,0,0,.08);text-decoration:none;color:#000}
     .sticky .box img{height:36px;width:auto;object-fit:contain}
-    .sticky .box b{font-weight:900;font-size:15px}.sticky .box .cta{margin-inline-start:auto;padding:10px 14px;border-radius:12px;background:#111;color:#fff;font-weight:800;font-size:14px}
-    @media (max-width:480px){.thumb{width:84px;height:64px;border-radius:14px}.txt h3{font-size:16px}}
+    .sticky .box b{font-weight:900;font-size:15px}
+    .sticky .box .cta{margin-inline-start:auto;padding:10px 14px;border-radius:12px;background:#111;color:#fff;font-weight:800;font-size:14px}
   </style>
 </head>
 <body>
   <div class="wrap">
-    <header>
-      <h1>اختَر القسم</h1>
-      <p class="sub">الصور تُقرأ بالاسم من نفس المجلد (ثم من photo/ كخيار احتياطي).</p>
-    </header>
-
-    <nav id="list" class="list" aria-label="التصنيفات"></nav>
+    <nav id="gallery" class="gallery" aria-label="روابط مصوّرة فقط"></nav>
   </div>
 
-  <!-- بوكس العروض والحملات (ثابت أسفل الشاشة) -->
+  <!-- بوكس العروض والحملات (ثابت) -->
   <div class="sticky" role="complementary" aria-label="العروض والحملات">
     <a id="offersBox" class="box" href="#" target="_self" rel="noopener">
-      <img id="offersImg" alt="العروض والحملات">
+      <img id="offersImg" alt="">
       <b>العروض والحملات</b>
       <span class="cta">شاهد العروض</span>
     </a>
   </div>
 
   <script>
-    const OPEN_IN_NEW_TAB = false;
-    const BASES = ["", "photo/"]; // جرّب الجذر أولاً، ثم photo/
-
-    // استخدم "file" لاسم الملف كما هو (مثال: "women-selective.webp")
-    const links = [
-      { file: "women-selective.webp", label: "عطور نسائية",         href: "#women" },
-      { file: "7.webp",               label: "عطور الجسم",          href: "#bodymist" }, // كان body-mist.webp وأصبح 7.webp
-      { file: "room-fragrance.webp",  label: "البيت والمكتب",        href: "#room" },
-      { file: "niche-women.webp",     label: "عطور النيش النسائية",  href: "#niche-women" },
-      { file: "niche-men.webp",       label: "عطور النيش الرجالية",  href: "#niche-men" },
+    /* ======= الإعدادات ======= */
+    const OPEN_IN_NEW_TAB = false;          // true لفتح الروابط في تبويب جديد
+    const BASES = ["", "photo/"];           // جرّب الجذر أولاً، ثم photo/
+    // ضع هنا كل صورة مع رابطها الكامل (HTTP):
+    const FILES = [
+      { file: "women-selective.webp", href: "https://example.com/women" },
+      { file: "7.webp",               href: "https://example.com/body-mist" },
+      { file: "room-fragrance.webp",  href: "https://example.com/room" },
+      { file: "niche-women.webp",     href: "https://example.com/niche-women" },
+      { file: "niche-men.webp",       href: "https://example.com/niche-men" },
+      // أضِف المزيد هكذا: { file: "8.webp", href: "https://example.com/..." },
     ];
 
-    // العروض: صورة ورابط
+    // إعداد بوكس العروض
     const OFFERS_FILE = "offers.webp";
-    const OFFERS_LINK = "#offers";
+    const OFFERS_LINK = "https://example.com/offers";
 
-    function applySrcWithFallback(imgEl, fileName){
+    // ======= وظائف مساعدة =======
+    function applySrcWithFallback(imgEl, file){
       let i = 0;
-      const tryNext = () => {
-        if(i >= BASES.length) return;
-        imgEl.src = BASES[i] + fileName;
-      };
+      const tryNext = () => { if(i < BASES.length) imgEl.src = BASES[i] + file; };
       imgEl.onerror = () => { i++; tryNext(); };
       tryNext();
     }
 
-    // توليد العناصر
-    const list = document.getElementById("list");
-    links.forEach((item, idx) => {
+    // توليد القائمة (صور فقط)
+    const g = document.getElementById("gallery");
+    FILES.forEach(item => {
       const a = document.createElement("a");
-      a.className = "card";
+      a.className = "tile";
       a.href = item.href || "#";
       a.target = OPEN_IN_NEW_TAB ? "_blank" : "_self";
       a.rel = "noopener";
 
-      const thumb = document.createElement("div"); thumb.className = "thumb";
       const img = document.createElement("img");
-      img.loading = "lazy"; img.decoding = "async"; img.alt = item.label || ("صورة " + (idx+1));
+      img.loading = "lazy"; img.decoding = "async"; img.alt = "";
       applySrcWithFallback(img, item.file);
 
-      const txt = document.createElement("div"); txt.className = "txt";
-      const h3 = document.createElement("h3"); h3.textContent = item.label || `قسم ${idx+1}`;
-      const span = document.createElement("span"); span.textContent = "اضغط للدخول";
-      txt.append(h3, span);
-
-      const arrow = document.createElement("div"); arrow.className = "arrow"; arrow.textContent = "›";
-
-      thumb.appendChild(img);
-      a.append(thumb, txt, arrow);
-      list.appendChild(a);
+      a.appendChild(img);
+      g.appendChild(a);
     });
 
-    // إعداد بوكس العروض
+    // بوكس العروض
     const offers = document.getElementById("offersBox");
     offers.href = OFFERS_LINK || "#";
     offers.target = OPEN_IN_NEW_TAB ? "_blank" : "_self";
