@@ -31,59 +31,51 @@
   <div class="wrap">
     <header>
       <h1>اختَر القسم</h1>
-      <p class="sub">ضع الصور مرقّمة بجانب هذا الملف (1.webp/1.jpg …).</p>
+      <p class="sub">الصور تُقرأ بالاسم من نفس المجلد (ثم من photo/ كخيار احتياطي).</p>
     </header>
+
     <nav id="list" class="list" aria-label="التصنيفات"></nav>
   </div>
 
   <!-- بوكس العروض والحملات (ثابت أسفل الشاشة) -->
   <div class="sticky" role="complementary" aria-label="العروض والحملات">
     <a id="offersBox" class="box" href="#" target="_self" rel="noopener">
-      <img id="offersImg" alt="">
+      <img id="offersImg" alt="العروض والحملات">
       <b>العروض والحملات</b>
       <span class="cta">شاهد العروض</span>
     </a>
   </div>
 
   <script>
-    /* إعدادات بسيطة */
-    const OPEN_IN_NEW_TAB = false; // true لفتح الروابط في تبويب جديد
-    const IMG_BASES = ["", "photo/"];                  // أولاً الجذر، ثم مجلد photo/
-    const EXT_ORDER = ["webp","jpg","jpeg","png"];     // جرّب هذه الامتدادات بالترتيب
+    const OPEN_IN_NEW_TAB = false;
+    const BASES = ["", "photo/"]; // جرّب الجذر أولاً، ثم photo/
 
-    // اربط كل صورة برابطها وعنوانها
+    // استخدم "file" لاسم الملف كما هو (مثال: "women-selective.webp")
     const links = [
-      { n: 1, href: "#women",       label: "عطور نسائية" },
-      { n: 2, href: "#bodymist",    label: "عطور الجسم" },
-      { n: 3, href: "#room",        label: "البيت والمكتب" },
-      { n: 4, href: "#niche-women", label: "عطور النيش النسائية" },
-      { n: 5, href: "#niche-men",   label: "عطور النيش الرجالية" },
-      { n: 6, href: "#offers",      label: "حملات/باقات" },
-      // أضف المزيد هنا...
+      { file: "women-selective.webp", label: "عطور نسائية",         href: "#women" },
+      { file: "7.webp",               label: "عطور الجسم",          href: "#bodymist" }, // كان body-mist.webp وأصبح 7.webp
+      { file: "room-fragrance.webp",  label: "البيت والمكتب",        href: "#room" },
+      { file: "niche-women.webp",     label: "عطور النيش النسائية",  href: "#niche-women" },
+      { file: "niche-men.webp",       label: "عطور النيش الرجالية",  href: "#niche-men" },
     ];
 
-    // صورة ورابط بوكس العروض
+    // العروض: صورة ورابط
+    const OFFERS_FILE = "offers.webp";
     const OFFERS_LINK = "#offers";
-    const OFFERS_IMAGE_NUM = 6;
 
-    // يبني مسار الصورة ويحاول بدائل عند الخطأ (امتداد/مجلد)
-    function applySmartSrc(imgEl, n) {
-      let b = 0, e = 0;
+    function applySrcWithFallback(imgEl, fileName){
+      let i = 0;
       const tryNext = () => {
-        if (b >= IMG_BASES.length) return;
-        imgEl.src = IMG_BASES[b] + n + "." + EXT_ORDER[e];
+        if(i >= BASES.length) return;
+        imgEl.src = BASES[i] + fileName;
       };
-      imgEl.onerror = () => {
-        e++;
-        if (e >= EXT_ORDER.length) { e = 0; b++; }
-        if (b < IMG_BASES.length) tryNext();
-      };
+      imgEl.onerror = () => { i++; tryNext(); };
       tryNext();
     }
 
-    // توليد البطاقات
+    // توليد العناصر
     const list = document.getElementById("list");
-    links.forEach((item, i) => {
+    links.forEach((item, idx) => {
       const a = document.createElement("a");
       a.className = "card";
       a.href = item.href || "#";
@@ -92,11 +84,11 @@
 
       const thumb = document.createElement("div"); thumb.className = "thumb";
       const img = document.createElement("img");
-      img.loading = "lazy"; img.decoding = "async"; img.alt = item.label || ("صورة " + item.n);
-      applySmartSrc(img, item.n);
+      img.loading = "lazy"; img.decoding = "async"; img.alt = item.label || ("صورة " + (idx+1));
+      applySrcWithFallback(img, item.file);
 
       const txt = document.createElement("div"); txt.className = "txt";
-      const h3 = document.createElement("h3"); h3.textContent = item.label || `قسم ${i+1}`;
+      const h3 = document.createElement("h3"); h3.textContent = item.label || `قسم ${idx+1}`;
       const span = document.createElement("span"); span.textContent = "اضغط للدخول";
       txt.append(h3, span);
 
@@ -111,9 +103,7 @@
     const offers = document.getElementById("offersBox");
     offers.href = OFFERS_LINK || "#";
     offers.target = OPEN_IN_NEW_TAB ? "_blank" : "_self";
-    const offersImg = document.getElementById("offersImg");
-    offersImg.alt = "العروض والحملات";
-    applySmartSrc(offersImg, OFFERS_IMAGE_NUM);
+    applySrcWithFallback(document.getElementById("offersImg"), OFFERS_FILE);
   </script>
 </body>
 </html>
